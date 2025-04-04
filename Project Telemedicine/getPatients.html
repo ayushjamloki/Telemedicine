@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h2 {
+            color: #007B3D;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007B3D;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Patient List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody id="patientTableBody">
+                <!-- Patient data will be inserted here -->
+            </tbody>
+        </table>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function checkLogin() {
+            const loggedIn = localStorage.getItem("docloggedIn");
+            if (!loggedIn) {
+                document.getElementById("patmenu").style.display = "none";
+                document.getElementById("logoutBtn").style.display = "none";
+                document.getElementById("loginMessage").style.display = "block";
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("docloggedIn");
+            window.location.href = "index.html"; // Redirect to homepage after logout
+        }
+        async function fetchPatients() {
+            // Check if doctor is logged in
+            if (!localStorage.getItem("docloggedIn")) {
+                window.location.href = "doctorlogin.html"; // Redirect if not logged in
+                return;
+            }
+
+            try {
+                let response = await fetch("http://localhost:8080/api/patient/seePatients");
+                if (!response.ok) throw new Error("Failed to fetch patient list");
+
+                let data = await response.json();
+                let tableBody = document.getElementById("patientTableBody");
+                tableBody.innerHTML = ""; // Clear previous data
+
+                data.forEach(patient => {
+                    let row = `<tr>
+                        <td>${patient.id}</td>
+                        <td>${patient.name}</td>
+                        <td>${patient.age}</td>
+                        <td>${patient.city}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("docloggedIn"); // Clear session
+            window.location.href = "index.html";
+        }
+        window.onload = function () {
+           checkLogin();
+           fetchPatients();
+};
+
+    </script>
+</body>
+</html>

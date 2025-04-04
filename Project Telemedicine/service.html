@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eSwasthya - Services</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('images/loginbg.jpg') no-repeat center center fixed;
+            background-size: cover; 
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #5147b9;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .logout-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .services {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .service-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .service-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        .service-card img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .service-card h2 {
+            color: #5147b9;
+        }
+
+        .service-card button {
+            background-color: #5147b9;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        #loginMessage {
+            text-align: center;
+            font-size: 20px;
+            color: red;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">eSwasthya</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="service.html">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <button id="logoutBtn" class="logout-btn" onclick="logout()">Logout</button>
+        <button id="logBtn" class="logbtn" onclick="logshow()"></button>
+    </header>
+
+    <p id="loginMessage">You must be logged in to access services.</p>
+
+    <section class="services" id="services">
+        <h1>Our Services</h1>
+        <div class="service-container">
+            <div class="service-card">
+                <img src="book_appointment.jpg" alt="Book Appointment">
+                <h2>Book Appointment</h2>
+                <p>Schedule an appointment with a doctor at your convenience.</p>
+                <button onclick="bookAppointment()">Book Now</button>
+            </div>
+            
+            <div class="service-card">
+                <img src="video_chat.jpg" alt="Video Chat">
+                <h2>Video Consultation</h2>
+                <p>Have a face-to-face consultation with a doctor online.</p>
+                <button onclick="startVideoChat()">Start Video Call</button>
+            </div>
+            
+            <div class="service-card">
+                <img src="chat.jpg" alt="Chat with Doctor">
+                <h2>Chat with Doctor</h2>
+                <p>Get instant medical advice through text chat.</p>
+                <button onclick="startChat()">Start Chat</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function checkLogin() {
+            const loggedIn = localStorage.getItem("loggedIn");
+            if (!loggedIn) {
+                document.getElementById("services").style.display = "none";
+                document.getElementById("logoutBtn").style.display = "none";
+                document.getElementById("loginMessage").style.display = "block";
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("loggedIn");
+            window.location.href = "index.html"; // Redirect to homepage after logout
+        }
+
+        function bookAppointment() {
+            window.location.href = "appointment.html";
+        }
+
+        function startVideoChat() {
+            let link = document.createElement("a");
+            link.href = "https://meet.google.com/landing?pli=1";
+            link.target = "_blank"; // Opens in new tab
+            link.click();
+        }
+
+        function startChat() {
+            alert('Opening chat...');
+        }
+
+        window.onload = function () {
+            window.onload = checkLogin;
+               
+       };
+    </script>
+</body>
+</html>
