@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eSwasthya</title>
+    <link rel="stylesheet" href="iindex.css">
+</head>
+<body>
+    <header>
+        <div class="logo">eSwasthya</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li id="servicesMenu" style="display: none;"><a href="service.html">Services</a></li>
+                <li><a href="medbot.html">HelpBot</a></li>
+                <li id="chatmenu" style="display: none;"><a href="#chat.html" >ChatWithDoctor</li>
+            </ul>
+        </nav>
+
+        <div class="login-buttons" id="loginButtons">
+            
+            <button onclick="openPatientLogin()">Patient</button>
+            <button onclick="openDoctorLogin()">Doctor</button>
+        </div>
+
+        <div id="logoutContainer" style="display: none;">
+            <button onclick="logout()" class="logout-btn">Logout</button>
+        </div>
+
+        <div class="menu"><h1>Menu</h1></div>
+    </header>
+    
+    <section class="hero">
+        <div class="hero-content">
+          
+            <div>
+                <li id="patmenu" style="display: none;"><a href="getPatients.html">See Patients</a></li>
+                <h1>Bringing Quality Healthcare Closer to You</h1>
+                <p>Experience seamless healthcare from the comfort of your home with eSwasthya—your trusted telemedicine companion.</p>
+                <p>eSwasthya is a step towards revolutionizing digital healthcare, ensuring easy and instant access to certified doctors and medical specialists anytime, anywhere. Whether through your smartphone or at the nearest health center, eSwasthya brings expert medical consultations to your fingertips, bridging the gap between patients and quality healthcare. Prioritize your well-being with convenient, secure, and efficient telehealth services.</p>
+            </div>
+            <img src="images/Home.jpg" alt="Doctor and patient teleconsultation" class="hero-image">
+        </div>
+        <!-- <button onclick="openChatbotPage()" class="abc">
+            <img src="/images/rob.png" alt="" class="rob"/>
+        </button>
+       -->
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let loggedIn = localStorage.getItem("loggedIn");
+            if (loggedIn === "true") {
+                document.getElementById("servicesMenu").style.display = "inline-block";
+                document.getElementById("chatmenu").style.display = "inline-block";
+                document.getElementById("loginButtons").style.display = "none";
+                document.getElementById("logoutContainer").style.display = "block";
+
+                
+          
+            } 
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            let loggedIn = localStorage.getItem("docloggedIn");
+            if (loggedIn === "true") {
+                document.getElementById("chatmenu").style.display = "inline-block";
+                document.getElementById("loginButtons").style.display = "none";
+                document.getElementById("logoutContainer").style.display = "block";
+                document.getElementById("patmenu").style.display = "block";
+            } 
+        });
+    
+        function logout() {
+            localStorage.removeItem("loggedIn");
+            localStorage.removeItem("docloggedIn");
+            location.reload(); // Refresh page after logout
+        }
+ 
+        function openPatientLogin() {
+            window.location.href = "patientlogin.html";
+        }
+
+        function openDoctorLogin() {
+            window.location.href = "doctorlogin.html";
+        }
+        function openChatbotPage(){
+            window.location.href = "medbot.html"
+        }
+    </script>
+   
+</body>
+</html>

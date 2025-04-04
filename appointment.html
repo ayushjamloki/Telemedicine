@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007B3D;
+            padding: 15px 30px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 40%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007B3D;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .appointments {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .appointment-item {
+            background: #e6e6e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">eSwasthya</div>
+    </header>
+    
+    <div class="container">
+        <h2>Book an Appointment</h2>
+        <form id="appointmentForm">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="email" id="email" placeholder="Your Email" required>
+            <input type="date" id="date" required>
+            <select id="doctor" required>
+               
+                <option value="">doctors..</option>
+            </select>
+            <button type="button" onclick="bookAppointment()">Book Now</button>
+        </form>
+
+        <h2>Appointments</h2>
+        <div class="appointments" id="appointmentsList"></div>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchDoctors(); // Fetch doctors when page loads
+        loadAppointments(); // Fetch appointments
+    });
+
+    function fetchDoctors() {
+        fetch("http://localhost:8080/getDoctor") // API call to backend
+            .then(response => response.json())
+            .then(data => {
+                let doctorSelect = document.getElementById("doctor");
+                doctorSelect.innerHTML = '<option value="">Select a Doctor</option>'; // Reset dropdown
+
+                data.forEach(doctor => {
+                    let option = document.createElement("option");
+                    option.value = doctor.id; // Store doctor ID
+                    option.textContent = `${doctor.name} - ${doctor.specialization}`;
+                    doctorSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching doctors:", error));
+    }
+
+    function bookAppointment() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let date = document.getElementById("date").value;
+        let doctorId = document.getElementById("doctor").value;
+        if (name && email && date && doctorId) {
+            fetch("http://localhost:8080/addAppointment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ name, email, date,  doctorId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Appointment booked successfully!");
+                loadAppointments(); // Reload appointments list
+            })
+            .catch(error => {
+                console.error("Error booking appointment:", error);
+                alert("Failed to book appointment.");
+            });
+        } else {
+            alert("Please fill all fields.");
+        }
+    }
+
+    async function loadAppointments() {
+        try {
+            let response = await fetch("http://localhost:8080/getAppointment");
+            let appointments = await response.json();
+            
+            let appointmentList = document.getElementById("appointmentsList");
+            appointmentList.innerHTML = "";
+
+            appointments.forEach(appt => {
+                let div = document.createElement("div");
+                div.className = "appointment-item";
+                div.innerHTML = `
+                    <span>${appt.name} - ${appt.doctorName} on ${appt.date}</span>
+                    <button class="delete-btn" onclick="deleteAppointment('${appt.id}')">Delete</button>
+                `;
+                appointmentList.appendChild(div);
+            });
+        } catch (error) {
+            console.error("Error loading appointments:", error);
+        }
+    }
+
+    async function deleteAppointment(id) {
+        try {
+            let response = await fetch(`http://localhost:8080/${id}`, { method: "DELETE" });
+
+            if (response.ok) {
+                alert("Appointment deleted successfully!");
+                loadAppointments();
+            } else {
+                alert("Failed to delete appointment.");
+            }
+        } catch (error) {
+            console.error("Error deleting appointment:", error);
+        }
+    }
+    </script>
+</body>
+</html>
